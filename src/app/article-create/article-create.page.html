@@ -1,9 +1,31 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>article-create</ion-title>
+    <ion-title>Create Article</ion-title>
   </ion-toolbar>
 </ion-header>
-
 <ion-content>
+<ion-item>
+  <ion-label>Title</ion-label>
+  <ion-input [(ngModel)]="article.title" name="title" type="text"></ion-input>
+  <div *ngIf="errors.title"> {{ errors.title }} </div>
+</ion-item>
 
+<ion-item>
+  <ion-label>Keywords</ion-label>
+  <ion-input [(ngModel)]="article.keywords" name="keywords" type="text"></ion-input>
+  <div *ngIf="errors.keywords"> {{ errors.keywords }} </div>
+</ion-item>
+
+<ion-item>
+  <ion-label>Body</ion-label>
+  <ion-input [(ngModel)]="article.body" name="body" type="text"></ion-input>
+  <div *ngIf="errors.body"> {{ errors.body }} </div>
+</ion-item>
+
+<ion-item>
+  <label for="published">Publish On</label>
+  <input [(ngModel)]="article.published" type="datetime-local" id="published" name="published">
+</ion-item>
+
+<ion-button color="primary" expand="full" (click)="onSubmit()">Submit</ion-button>
 </ion-content>

@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { ArticlesService } from '../articles.service';
+import { Article } from '../article.model'; 
 
 @Component({
   selector: 'app-article-edit',
@@ -7,9 +11,57 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ArticleEditPage implements OnInit {
 
-  constructor() { }
+  article: Article;
+  errors: any = {};
+  
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private articlesService: ArticlesService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
+    this.activatedRoute.params.subscribe(params=>{
+      this.getArticle(params['articleId']);
+    });
   }
 
+  response(response): void{
+    
+    if(response.success===false){
+      
+      if( response.errors.title == 'MissingArticletitleError' ){
+        this.errors.articletitle = 'Please enter a articletitle';
+      }
+
+      if( response.errors.title == 'ArticleExistsError' ){
+        this.errors.articletitle = 'A article with the given articletitle is already registered';
+      }
+
+      if( response.errors.published ){
+        this.errors.published = response.errors.errors.published.message;
+      }
+
+    }
+
+    if(response.success===true){
+      this.router.navigate(['/articles']);
+    }
+  }
+
+  onSubmit(): void{
+    this.articlesService.updateArticle(this.article).subscribe(
+      (response:any) => {
+        this.response(response);
+      }
+    );
+  }
+
+  getArticle(id:string):void {
+    this.articlesService.getArticle(id).subscribe(
+      (response:any)=>{
+        this.article = response.article;
+      }
+    );
+  }
 }
